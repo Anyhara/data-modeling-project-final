@@ -1,29 +1,50 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class Apoderado(Base):
+    __tablename__ = 'apoderado'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+    nombre = Column(String, nullable=False)
+    apellido = Column(String(120), nullable=False)
+    correo_electronico = Column(String(120), unique=True, nullable=False)
+    contrasena = Column(String(80), nullable=False)
+    esta_activo = Column(Boolean, nullable=False, default=False)
+    telefono = Column(String(20), nullable=True)
+    direccion = Column(String(250), nullable=True)
+    
+class Profesor(Base):
+    __tablename__ = 'profesor'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    nombre = Column(String(120), nullable=False)
+    apellido = Column(String(120), nullable=False)
+    correo_electronico = Column(String(120), unique=True, nullable=False)
+    contrasena = Column(String(80), nullable=False)
+    esta_activo = Column(Boolean, nullable=False, default=False)
+    titulo = Column(String(120), nullable=True)
+    especializacion = Column(String(120), nullable=True)
+   
+class Asignatura(Base):
+    __tablename__ = 'asignatura'
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(120), nullable=False)
+    id_profesor = Column(Integer, ForeignKey('profesor.id'))
+    
+class Alumno(Base):
+    __tablename__ = 'alumno'
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(120), nullable=False)
+    apellido = Column(String(120), nullable=False)
+    id_apoderado = Column(Integer, ForeignKey('apoderado.id'))
+    id_asignatura = Column(Integer, ForeignKey('asignatura.id'))
+    esta_activo = Column(Boolean, nullable=False, default=False)
+   
+    
 
     def to_dict(self):
         return {}
